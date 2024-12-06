@@ -1,0 +1,13 @@
+.buylist-sidebar {
+  height: calc(100vh - 57px);
+}
+
+.buylist-sidebar-inset {
+  height: calc(100vh - 57px);
+  overflow: auto
+}
+
+.buylist-sidebar-content {
+  height: calc(100vh - (57px + 64px));
+  overflow: auto
+}

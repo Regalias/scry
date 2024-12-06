@@ -1,0 +1,17 @@
+.cardlist {
+  &.selected-all {
+    color: var(--color-ok);
+  }
+
+  &.selected-partial {
+    color: var(--color-warn);
+  }
+
+  &.selected-flagged {
+    color: var(--color-error);
+  }
+
+  /* &.selected-none {
+        color: var(--color-inactive)
+    } */
+}

@@ -1,0 +1,95 @@
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* Hide overlay elements on hover*/
+.offering-card {
+  &:hover {
+    .overlay {
+      opacity: 0;
+    }
+
+    .vendor-overlay {
+      opacity: 0;
+    }
+  }
+}
+
+/* Shining border for cards */
+.offering-card-border {
+  z-index: 10;
+
+  --clr-1: rgba(255, 205, 0, 1);
+  --clr-2: rgba(255, 136, 0, 1);
+  --clr-3: rgba(255, 64, 0, 1);
+
+  &.foil {
+    --clr-1: rgba(0, 254, 255, 1);
+    --clr-2: rgba(0, 198, 255, 1);
+    --clr-3: rgba(0, 108, 255, 1);
+  }
+
+  &.etched {
+    --clr-1: rgba(255, 205, 0, 1);
+    --clr-2: rgba(255, 136, 0, 1);
+    --clr-3: rgba(255, 64, 0, 1);
+  }
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -0.2rem;
+    z-index: -1;
+    background: conic-gradient(
+      from var(--gradient-angle),
+      var(--clr-1),
+      var(--clr-2),
+      var(--clr-3),
+      var(--clr-2),
+      var(--clr-1)
+    );
+    border-radius: 0.75rem;
+    animation: rotation 5s linear infinite;
+  }
+
+  &::after {
+    filter: blur(1rem);
+  }
+}
+
+@keyframes rotation {
+  0% {
+    --gradient-angle: 0deg;
+  }
+  100% {
+    --gradient-angle: 360deg;
+  }
+}
+
+/* Fake rainbow overlay effect for foil cards, not currently used */
+.foil-cover::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    rgba(222, 197, 37, 0) 0%,
+    rgba(222, 197, 37, 0) 1%,
+    rgba(255, 8, 8, 0.06) 19%,
+    rgba(239, 111, 23, 0.1) 32%,
+    rgba(222, 213, 37, 0.23) 45%,
+    rgba(36, 222, 101, 0.39) 62%,
+    rgba(47, 221, 109, 0.4) 63%,
+    rgba(216, 208, 239, 0.39) 79%,
+    rgba(131, 123, 173, 0.38) 88%,
+    rgba(136, 129, 178, 0.38) 89%,
+    rgba(193, 191, 234, 0) 100%
+  );
+}

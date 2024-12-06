@@ -1,0 +1,4 @@
+.topbar {
+  background-color: hsl(var(--sidebar-background));
+  color: hsl(var(--sidebar-foreground));
+}

@@ -1,0 +1,3 @@
+.dark {
+  scrollbar-color: hsl(var(--sidebar-accent)) hsl(var(--sidebar-background));
+}
