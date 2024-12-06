@@ -12,6 +12,7 @@ A wallet emptying assistant™, down under edition. Some parts WIP
 4. Profit
 
 Notes:
+- Data is stored in a file named `buylists.db` in the executable working directory
 - Left click on the product image to add a copy to your list, right click to remove a copy
 - While it eventually works, searching basic lands will take an eternity due to the sheer volume of results
 - Expect bugs
