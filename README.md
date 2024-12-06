@@ -1,5 +1,7 @@
 # Scry
 
+[![build](https://github.com/Regalias/scry/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/Regalias/scry/actions/workflows/build.yml)
+
 A wallet emptying assistant™, down under edition. Some parts WIP
 
 ![preview](docs/screenshot.png)
