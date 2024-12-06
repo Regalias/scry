@@ -1,5 +1,8 @@
 name: build
 
+permissions:
+  contents: write
+
 on:
   push:
     tags:
@@ -48,9 +51,9 @@ jobs:
       - name: Prepackaging
         if: runner.os == 'macOS' && startsWith(github.ref, 'refs/tags/')
         shell: bash
-        working-directory: ${{ inputs.app-working-directory }}
+        working-directory: .
         run: |
-          mv ${{ inputs.app-working-directory }}/build/bin/${{ matrix.build.name }} ${{ matrix.build.name }}-macos-darwin
+          mv ./build/bin/${{ matrix.build.name }} ./build/bin/${{ matrix.build.name }}-macos-darwin
 
       - name: Package
         uses: actions/upload-artifact@v3
