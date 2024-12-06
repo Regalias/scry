@@ -17,10 +17,10 @@ jobs:
       fail-fast: false
       matrix:
         build:
-          - name: "scry"
+          - name: "scry-linux-amd64"
             platform: "linux/amd64"
             os: "ubuntu-latest"
-          - name: "scry"
+          - name: "scry-win-amd64.exe"
             platform: "windows/amd64"
             os: "windows-latest"
           - name: "scry"
@@ -34,12 +34,35 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Build wails
+      - name: Build
         uses: dAppServer/wails-build-action@v2.2
         id: build
         with:
           build-name: ${{ matrix.build.name }}
           build-platform: ${{ matrix.build.platform }}
-          package: true
+          package: false
           go-version: "^1.23"
           node-version: "22.x"
+
+      # workaround for mac builds breaking with name changes
+      - name: Prepackaging
+        if: runner.os == 'macOS' && startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        working-directory: ${{ inputs.app-working-directory }}
+        run: |
+          mv ${{ inputs.app-working-directory }}/build/bin/${{ matrix.build.name }} ${{ maxtrix-build-name }}-macos-darwin
+
+      - name: Package
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-build-${{runner.os}}
+          path: |
+            */bin/
+            *\bin\*
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            */bin/*
