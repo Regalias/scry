@@ -53,7 +53,7 @@ jobs:
         shell: bash
         working-directory: .
         run: |
-          mv ./build/bin/${{ matrix.build.name }} ./build/bin/${{ matrix.build.name }}-macos-darwin
+          mv ./build/bin/${{ matrix.build.name }}.app.zip ./build/bin/${{ matrix.build.name }}-macos-darwin.app.zip
 
       - name: Package
         uses: actions/upload-artifact@v3
