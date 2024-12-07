@@ -11,7 +11,7 @@ import "./offeringCard.css";
 
 export interface OfferingCardProps {
   offering: models.Offering;
-  selectedQty?: number;
+  selection?: models.ProductSelection;
   size?: OfferingCardSize;
   previous?: models.Offering;
   onSelect?: (offering: models.Offering) => void;
@@ -45,7 +45,7 @@ export type OfferingCardSize = keyof typeof sizeClasses;
 
 export const OfferingCard = ({
   offering,
-  selectedQty = 0,
+  selection,
   size = "small",
   onDeselect,
   onSelect,
@@ -65,10 +65,21 @@ export const OfferingCard = ({
     return "none";
   }, [offering.properties]);
 
+  const selectedQty = selection?.quantity ?? 0;
+
+  let border = "border-secondary";
+  if (selection?.isFlagged) {
+    border = "border-rose-500";
+  } else if (selection?.isPurchased) {
+    border = "border-green-500";
+  } else if (selectedQty > 0) {
+    border = "border-amber-500";
+  }
+
   return (
     <div
       className={clsx(
-        selectedQty ? "border-amber-500" : "border-secondary",
+        border,
         // sizeClasses[size].width,
         "w-[280px] m-2 rounded-xl border",
       )}

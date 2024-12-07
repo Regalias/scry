@@ -126,7 +126,7 @@ const CardList = ({ card, vendor, filter = "" }: CardListProps) => {
           <OfferingCard
             offering={offering}
             key={offering.productUri}
-            selectedQty={selection?.quantity}
+            selection={selection}
             onSelect={addOffering}
             onDeselect={removeOffering}
           />

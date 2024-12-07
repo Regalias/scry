@@ -47,12 +47,12 @@ export const SelectedOfferings = ({ card }: SelectedOfferingsProps) => {
     >
       <div className="flex flex-wrap items-center space-x-4">
         {card.selections.length ? (
-          card.selections.map((card) => {
+          card.selections.map((selection) => {
             return (
               <OfferingCard
-                offering={card.offering}
-                key={card.id}
-                selectedQty={card.quantity}
+                offering={selection.offering}
+                key={selection.id}
+                selection={selection}
                 onSelect={addOffering}
                 onDeselect={removeOffering}
               />
