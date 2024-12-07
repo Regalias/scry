@@ -2,7 +2,7 @@
 
 [![build](https://github.com/Regalias/scry/actions/workflows/build.yml/badge.svg)](https://github.com/Regalias/scry/actions/workflows/build.yml)
 
-A wallet emptying assistant™, down under edition. Some parts WIP
+A wallet emptying assistant™, down under edition.
 
 ![preview](docs/screenshot.png)
 
@@ -14,10 +14,10 @@ A wallet emptying assistant™, down under edition. Some parts WIP
 4. Profit
 
 Notes:
-- Data is stored in a file named `buylists.db` in the executable working directory
+- Data is stored in a sqlite file named `buylists.db` in the executable working directory
 - Left click on the product image to add a copy to your list, right click to remove a copy
 - While it eventually works, searching basic lands will take an eternity due to the sheer volume of results
-- Expect bugs
+- Some parts WIP, expect bugs
 
 ### Mac users
 
