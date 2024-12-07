@@ -2,6 +2,7 @@ package gamescube
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -109,14 +110,19 @@ func (v *Vendor) parseProduct(s *goquery.Selection, cardName string) (*models.Of
 		return nil, fmt.Errorf("failed to find product price")
 	}
 	price = strings.Trim(price, "AUD$ ")
-	price_in_cents := strings.Replace(price, ".", "", 1)
-	if len(price_in_cents) > 4 {
-		price_in_cents = price_in_cents[:4]
+	price_parts := strings.Split(price, ".")
+	if len(price_parts) != 2 {
+		return nil, errors.New("failed parsing price: multiple '.' chars found")
 	}
-	price_int, err := strconv.ParseInt(price_in_cents, 10, 64)
+	// Truncate off the cents to 2 digits
+	cents := price_parts[1]
+	if len(cents) > 2 {
+		cents = cents[:2]
+	}
+	price_int, err := strconv.ParseInt(price_parts[0]+cents, 10, 64)
 	if err != nil {
 		price_int = -1
-		return nil, fmt.Errorf("failed to convert price to float64 for '%s'", productName)
+		return nil, fmt.Errorf("failed to convert price to int64 for '%s'", productName)
 	}
 
 	// Other metadata
