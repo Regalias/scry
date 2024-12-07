@@ -15,6 +15,7 @@ import (
 
 type ScrapeClient struct {
 	client *http.Client
+	// TODO: pass down logger for debug logging
 }
 
 func NewScrapeClient() (*ScrapeClient, error) {
@@ -37,8 +38,8 @@ func NewScrapeClient() (*ScrapeClient, error) {
 	}, nil
 }
 
-func (sc *ScrapeClient) newRequest(ctx context.Context, method string, url string) (*http.Request, error) {
-	req, err := http.NewRequestWithContext(ctx, method, url, nil)
+func (sc *ScrapeClient) newRequest(ctx context.Context, method string, url string, body io.Reader) (*http.Request, error) {
+	req, err := http.NewRequestWithContext(ctx, method, url, body)
 	if err != nil {
 		return nil, err
 	}
@@ -46,11 +47,18 @@ func (sc *ScrapeClient) newRequest(ctx context.Context, method string, url strin
 	return req, nil
 }
 
-func (sc *ScrapeClient) doRequest(ctx context.Context, method string, url string, expectedMIME string) (*http.Response, error) {
-	req, err := sc.newRequest(ctx, method, url)
+func (sc *ScrapeClient) doRequest(ctx context.Context, method string, url string, body io.Reader, expectedMIME string, headers map[string]string) (*http.Response, error) {
+	req, err := sc.newRequest(ctx, method, url, body)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
+
+	for k, v := range headers {
+		req.Header.Set(k, v)
+	}
+
+	// TODO: some flag to enable/disable this
+	// bytes, _ := httputil.DumpRequestOut(req, true)
 
 	resp, err := sc.client.Do(req)
 	if err != nil {
@@ -59,8 +67,13 @@ func (sc *ScrapeClient) doRequest(ctx context.Context, method string, url string
 	}
 
 	if resp.StatusCode != http.StatusOK {
+		// respBytes, _ := httputil.DumpResponse(resp, true)
+		// bytes = append(bytes, respBytes...)
+		// fmt.Printf("%s\n", bytes)
+
+		data, _ := io.ReadAll(resp.Body)
 		resp.Body.Close()
-		return nil, fmt.Errorf("got unexpected HTTP status response: %s", resp.Status)
+		return nil, fmt.Errorf("got unexpected HTTP status response: %s, %s", resp.Status, data)
 	}
 
 	// Loose content type check
@@ -74,7 +87,7 @@ func (sc *ScrapeClient) doRequest(ctx context.Context, method string, url string
 
 func (sc *ScrapeClient) Visit(ctx context.Context, url string) (*goquery.Document, error) {
 
-	resp, err := sc.doRequest(ctx, http.MethodGet, url, "html")
+	resp, err := sc.doRequest(ctx, http.MethodGet, url, nil, "html", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -89,8 +102,20 @@ func (sc *ScrapeClient) Visit(ctx context.Context, url string) (*goquery.Documen
 	return doc, nil
 }
 
-func (sc *ScrapeClient) VisitJson(ctx context.Context, url string) ([]byte, error) {
-	resp, err := sc.doRequest(ctx, http.MethodGet, url, "application/json")
+func (sc *ScrapeClient) VisitJson(ctx context.Context, url string, method string, body io.Reader, authToken string) ([]byte, error) {
+
+	var headers map[string]string
+	if body != nil {
+		headers = map[string]string{
+			"Content-Type": "application/json",
+		}
+
+		if authToken != "" {
+			headers["authorization"] = authToken
+		}
+	}
+
+	resp, err := sc.doRequest(ctx, method, url, body, "application/json", headers)
 	if err != nil {
 		return nil, err
 	}

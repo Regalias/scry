@@ -2,7 +2,6 @@ package gamescube
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -26,7 +25,7 @@ func (v *Vendor) parsePageProducts(ctx context.Context, cardName string, documen
 		offering, err := v.parseProduct(selection, cardName)
 		if err != nil {
 			// don't fail the whole thing on a single parsing error
-			v.logger.Error(err.Error())
+			v.logger.With("cardName", cardName).Error(err.Error())
 		}
 
 		if offering != nil {
@@ -110,19 +109,9 @@ func (v *Vendor) parseProduct(s *goquery.Selection, cardName string) (*models.Of
 		return nil, fmt.Errorf("failed to find product price")
 	}
 	price = strings.Trim(price, "AUD$ ")
-	price_parts := strings.Split(price, ".")
-	if len(price_parts) != 2 {
-		return nil, errors.New("failed parsing price: multiple '.' chars found")
-	}
-	// Truncate off the cents to 2 digits
-	cents := price_parts[1]
-	if len(cents) > 2 {
-		cents = cents[:2]
-	}
-	price_int, err := strconv.ParseInt(price_parts[0]+cents, 10, 64)
+	price_int, err := scrape.ParsePrice(price)
 	if err != nil {
-		price_int = -1
-		return nil, fmt.Errorf("failed to convert price to int64 for '%s'", productName)
+		return nil, fmt.Errorf("failed parsing price: %w", err)
 	}
 
 	// Other metadata

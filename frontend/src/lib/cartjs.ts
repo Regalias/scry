@@ -6,6 +6,7 @@ export const automationByVendor: Record<
 > = {
   mtgmate: getMtgmateCartJs,
   gamescube: getGamescubeJs,
+  goodgames: getGoodgamesJs,
 };
 
 // mtgmate
@@ -89,6 +90,40 @@ function getGamescubeJs(selections: models.ProductSelection[]) {
         (sel) =>
           `items.push({ variant_id: ${sel.offering.storeSKU}, qty: ${sel.quantity.toString()} })`,
       )
-      .join("\n") + "\naddToCart(items).then(() => console.log('ok'))"
+      .join("\n") +
+    "\naddToCart(items).then(() => console.log('ok'))"
+  );
+}
+
+// goodgames
+const goodgamesJs = `// 1. Open https://tcg.goodgames.com.au in your browser
+// 2. Open your browser tools/console and copy/paste the below block of code in.
+//    You may need to do 'allow pasting'.
+// ! Please review your cart and double check your cart quantities are correct
+
+async function addToCart(id, quantity) {
+    try {
+        const resp = await fetch("https://tcg.goodgames.com.au/cart/add.js", {
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ form_type: "product", utf8: "✓", quantity, id: 39894558572723 }),
+            method: "POST",
+        });
+    } catch (err) {
+        console.error(err);
+    }
+}
+`;
+
+function getGoodgamesJs(selections: models.ProductSelection[]) {
+  return (
+    goodgamesJs +
+    selections
+      .map(
+        (sel) =>
+          `addToCart(${sel.offering.storeSKU}, "${sel.quantity.toString()}"))`,
+      )
+      .join("\n")
   );
 }

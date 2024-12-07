@@ -39,6 +39,7 @@ const sizeClasses = {
 const vendorColorMap = {
   gamescube: "rgb(254, 0, 0)",
   mtgmate: "rgb(249, 167, 43)",
+  goodgames: "rgb(122, 137, 255)",
 };
 
 export type OfferingCardSize = keyof typeof sizeClasses;

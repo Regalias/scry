@@ -8,6 +8,7 @@ import (
 	"github.com/regalias/scry/pkg/models"
 	"github.com/regalias/scry/pkg/scrape"
 	"github.com/regalias/scry/pkg/vendors/gamescube"
+	"github.com/regalias/scry/pkg/vendors/goodgames"
 	"github.com/regalias/scry/pkg/vendors/mtgmate"
 )
 
@@ -28,6 +29,7 @@ func NewManager(logger *slog.Logger) (*Manager, error) {
 	scrapers := map[string]scrape.VendorParser{
 		gamescube.VENDOR_ID: gamescube.New(logger, client),
 		mtgmate.VENDOR_ID:   mtgmate.New(logger, client),
+		goodgames.VENDOR_ID: goodgames.New(logger, client),
 	}
 
 	vendors := make([]string, 0, len(scrapers))
