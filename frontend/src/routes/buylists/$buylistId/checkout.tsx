@@ -17,6 +17,7 @@ import {
   useSelectionRemoveCallback,
   useSelectionStatusCallback,
 } from "@/hooks/selectionsStatus";
+import { automationByVendor } from "@/lib/cartjs";
 import { createFileRoute } from "@tanstack/react-router";
 import { GetBuylistSummary } from "@wails/go/main/App";
 import { buylist, models } from "@wails/go/models";
@@ -58,7 +59,7 @@ function RouteComponent() {
           {vendors.map((vendor) => {
             return (
               <TabsContent value={vendor} key={vendor}>
-                <SummaryTable summary={summaryByVendor[vendor]} />
+                <SummaryTable summary={summaryByVendor[vendor]} vendor={vendor}/>
               </TabsContent>
             );
           })}
@@ -70,13 +71,17 @@ function RouteComponent() {
 
 interface SummaryTableProps {
   summary: models.VendorSummary;
+  vendor: string;
 }
-const SummaryTable = ({ summary }: SummaryTableProps) => {
+const SummaryTable = ({ summary, vendor }: SummaryTableProps) => {
   const exportText = summary.cardList
     .map((cl) => `${cl.qty.toString()} ${cl.name}`)
     .join("\n");
   const updateSelection = useSelectionStatusCallback();
   const removeSelection = useSelectionRemoveCallback();
+
+
+
   return (
     <div>
       <Table>
@@ -188,7 +193,7 @@ const SummaryTable = ({ summary }: SummaryTableProps) => {
           <Textarea
             className="resize-none"
             rows={20}
-            value={"TODO: cart automation stuff here"}
+            value={automationByVendor[vendor]?.(summary.selections) ?? "Not currently available"}
             contentEditable={false}
           />
         </div>
