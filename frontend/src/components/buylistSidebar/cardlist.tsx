@@ -44,7 +44,12 @@ export function CardSidebarList({ buylistId, cards }: CardSidebarListProps) {
   return (
     <>
       <SidebarGroup>
-        <form autoComplete="off">
+        <form
+          autoComplete="off"
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
+        >
           <SidebarGroup className="py-0">
             <SidebarGroupContent className="relative">
               <Label htmlFor="search" className="sr-only">
