@@ -52,7 +52,7 @@ func (v *Vendor) ScrapeCard(ctx context.Context, cardName string) ([]*models.Off
 			// which will break frontend rendering keys
 			if _, exists := addedProductURIs[products[i].ProductURI]; !exists {
 				addedProductURIs[products[i].ProductURI] = struct{}{}
-				vendorProducts = append(vendorProducts, products[i])
+				vendorProducts = append(vendorProducts, &products[i])
 			}
 		}
 		nextPage, _ = v.parseNextPageURL(doc)
