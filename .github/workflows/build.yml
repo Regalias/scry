@@ -56,7 +56,7 @@ jobs:
           mv ./build/bin/${{ matrix.build.name }}.app.zip ./build/bin/${{ matrix.build.name }}-macos-darwin.app.zip
 
       - name: Package
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: app-build-${{runner.os}}
           path: |
