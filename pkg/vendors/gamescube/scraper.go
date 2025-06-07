@@ -30,6 +30,7 @@ func (v *Vendor) ScrapeCard(ctx context.Context, cardName string) ([]*models.Off
 
 	nextPage := url
 	vendorProducts := []*models.Offering{}
+	addedProductURIs := map[string]struct{}{}
 
 	for nextPage != "" {
 		if err := ctx.Err(); err != nil {
@@ -47,16 +48,10 @@ func (v *Vendor) ScrapeCard(ctx context.Context, cardName string) ([]*models.Off
 
 		for i := range products {
 			// Add product only if it doesn't already exist
-			// Needed because gamescube returns duplicate products between pages
+			// Needed because gamescube can return duplicate products between pages
 			// which will break frontend rendering keys
-			exists := false
-			for x := range vendorProducts {
-				if vendorProducts[x].ProductURI == products[i].ProductURI {
-					exists = true
-					break
-				}
-			}
-			if !exists {
+			if _, exists := addedProductURIs[products[i].ProductURI]; !exists {
+				addedProductURIs[products[i].ProductURI] = struct{}{}
 				vendorProducts = append(vendorProducts, products[i])
 			}
 		}
